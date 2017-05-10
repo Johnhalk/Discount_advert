@@ -2,6 +2,7 @@ require './models/broadcaster'
 require './models/delivery'
 require './models/material'
 require './models/order'
+require './models/discount'
 
 describe Order do
   subject { Order.new material }
@@ -24,6 +25,18 @@ describe Order do
       subject.add broadcaster_2, express_delivery
 
       expect(subject.total_cost).to eq(30)
+    end
+
+    it 'applies express discount with two or more express delivery items' do
+      broadcaster_1 = Broadcaster.new(1, 'Viacom')
+      broadcaster_2 = Broadcaster.new(2, 'Disney')
+      broadcaster_3 = Broadcaster.new(3, 'ITV')
+
+      subject.add broadcaster_1, standard_delivery
+      subject.add broadcaster_2, express_delivery
+      subject.add broadcaster_3, express_delivery
+
+      expect(subject.express_discount_applied).to eq(40)
     end
   end
 

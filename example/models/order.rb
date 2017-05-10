@@ -5,12 +5,13 @@ class Order
     price: 8
   }.freeze
 
-  attr_accessor :material, :items, :delivery_type
+  attr_accessor :material, :items, :delivery_type, :discount, :express_delivery_frequency
 
   def initialize(material)
     self.material = material
     self.items = []
-    self.delivery_type = []
+    @delivery_type = []
+    @discount = Discount.new
   end
 
   def add(broadcaster, delivery)
@@ -20,6 +21,11 @@ class Order
 
   def add_delivery_type(delivery)
     delivery_type << delivery.name
+    @express_delivery_frequency = delivery_type.count(:express)
+  end
+
+  def express_discount_applied
+    total_cost - @discount.express_discount(express_delivery_frequency)
   end
 
   def total_cost
@@ -42,7 +48,8 @@ class Order
       end
 
       result << output_separator
-      result << "Total: $#{total_cost}"
+      result << "Discount savings: $#{@discount.express_discount_amount}"
+      result << "Total: $#{express_discount_applied}"
     end.join("\n")
   end
 
