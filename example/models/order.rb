@@ -5,15 +5,21 @@ class Order
     price: 8
   }.freeze
 
-  attr_accessor :material, :items
+  attr_accessor :material, :items, :delivery_type
 
   def initialize(material)
     self.material = material
     self.items = []
+    self.delivery_type = []
   end
 
   def add(broadcaster, delivery)
     items << [broadcaster, delivery]
+    add_delivery_type(delivery)
+  end
+
+  def add_delivery_type(delivery)
+    delivery_type << delivery.name
   end
 
   def total_cost

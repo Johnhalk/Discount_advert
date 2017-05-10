@@ -26,4 +26,18 @@ describe Order do
       expect(subject.total_cost).to eq(30)
     end
   end
+
+  context 'adds delivery types' do
+    it 'adds each delivery type to a seperate array' do
+      broadcaster_1 = Broadcaster.new(1, 'Viacom')
+      broadcaster_2 = Broadcaster.new(2, 'Disney')
+      broadcaster_3 = Broadcaster.new(3, 'ITV')
+
+      subject.add broadcaster_1, standard_delivery
+      subject.add broadcaster_2, express_delivery
+      subject.add broadcaster_3, express_delivery
+
+      expect(subject.delivery_type).to eq([:standard, :express, :express])
+    end
+  end
 end
