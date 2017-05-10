@@ -35,14 +35,14 @@ class Order
   def percentage_discount_applied
     express_discount_applied
     if @express_discount_total == 0
-      percentage_discount_applied = total_cost - @discount.percentage_discount(total_cost)
+      percentage_discount_total = total_cost - @discount.percentage_discount(total_cost)
     else
-      percentage_discount_applied = @discount.percentage_discount(@express_discount_total)
+      percentage_discount_total = total_cost - @discount.percentage_discount(@express_discount_total)
     end
   end
 
   def total_savings
-    percentage_discount_applied
+    total_cost - percentage_discount_applied
   end
 
   def total_cost
@@ -66,8 +66,8 @@ class Order
 
       result << output_separator
       result << "Before discount: $#{total_cost}"
-      result << "Discount savings: $#{total_savings}"
-      result << "Total: $#{total_cost - percentage_discount_applied}"
+      result << "Discount savings: $#{percentage_discount_total}"
+      result << "Total: $#{total_savings}"
     end.join("\n")
   end
 

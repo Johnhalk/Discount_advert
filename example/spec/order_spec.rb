@@ -38,9 +38,38 @@ describe Order do
 
       expect(subject.express_discount_applied).to eq(40)
     end
+
+    it 'applies percentage discount to orders over $30 with no express delivery' do
+      broadcaster_1 = Broadcaster.new(1, 'Viacom')
+      broadcaster_2 = Broadcaster.new(2, 'Disney')
+      broadcaster_3 = Broadcaster.new(3, 'ITV')
+
+      subject.add broadcaster_1, standard_delivery
+      subject.add broadcaster_2, standard_delivery
+      subject.add broadcaster_3, standard_delivery
+
+      expect(subject.total_savings).to eq(27)
+    end
+
+    it 'applies both discounts when criteria is met' do
+      broadcaster_1 = Broadcaster.new(1, 'Viacom')
+      broadcaster_2 = Broadcaster.new(2, 'Disney')
+      broadcaster_3 = Broadcaster.new(3, 'ITV')
+      broadcaster_4 = Broadcaster.new(4, 'Discovery')
+      broadcaster_5 = Broadcaster.new(5, 'Channel 4')
+
+      subject.add broadcaster_1, standard_delivery
+      subject.add broadcaster_2, standard_delivery
+      subject.add broadcaster_3, standard_delivery
+      subject.add broadcaster_4, express_delivery
+      subject.add broadcaster_5, express_delivery
+
+
+      expect(subject.total_savings).to eq(54)
+    end
   end
 
-  context 'adds delivery types' do
+  context 'delivery types' do
     it 'adds each delivery type to a seperate array' do
       broadcaster_1 = Broadcaster.new(1, 'Viacom')
       broadcaster_2 = Broadcaster.new(2, 'Disney')
