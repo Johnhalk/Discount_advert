@@ -24,11 +24,11 @@ order = Order.new(material)
 
 order.add broadcaster_1, standard_delivery
 order.add broadcaster_2, standard_delivery
-order.add broadcaster_3, express_delivery
-order.add broadcaster_4, express_delivery
+
 
 order.discount.express_discount(order.express_delivery_frequency)
 order.discount.express_discount_amount
+order.discount.percentage_discount(order.total_cost)
 
 print order.output
 print "\n"

@@ -5,7 +5,7 @@ class Order
     price: 8
   }.freeze
 
-  attr_accessor :material, :items, :delivery_type, :discount, :express_delivery_frequency
+  attr_accessor :material, :items, :delivery_type, :discount, :express_delivery_frequency, :total_cost, :express_discount_total, :percentage_discount_applied
 
   def initialize(material)
     self.material = material
@@ -25,7 +25,24 @@ class Order
   end
 
   def express_discount_applied
-    total_cost - @discount.express_discount(express_delivery_frequency)
+    if @express_delivery_frequency >=2
+      @express_discount_total = total_cost - @discount.express_discount(express_delivery_frequency)
+    else
+      @express_discount_total = 0
+    end
+  end
+
+  def percentage_discount_applied
+    express_discount_applied
+    if @express_discount_total == 0
+      percentage_discount_applied = total_cost - @discount.percentage_discount(total_cost)
+    else
+      percentage_discount_applied = @discount.percentage_discount(@express_discount_total)
+    end
+  end
+
+  def total_savings
+    percentage_discount_applied
   end
 
   def total_cost
@@ -48,8 +65,9 @@ class Order
       end
 
       result << output_separator
-      result << "Discount savings: $#{@discount.express_discount_amount}"
-      result << "Total: $#{express_discount_applied}"
+      result << "Before discount: $#{total_cost}"
+      result << "Discount savings: $#{total_savings}"
+      result << "Total: $#{total_cost - percentage_discount_applied}"
     end.join("\n")
   end
 
