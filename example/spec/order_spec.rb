@@ -27,7 +27,7 @@ describe Order do
       expect(subject.total_cost).to eq(30)
     end
 
-    it 'applies express discount with two or more express delivery items' do
+    it 'applies discount with two or more express delivery items' do
       broadcaster_1 = Broadcaster.new(1, 'Viacom')
       broadcaster_2 = Broadcaster.new(2, 'Disney')
       broadcaster_3 = Broadcaster.new(3, 'ITV')
@@ -36,7 +36,7 @@ describe Order do
       subject.add broadcaster_2, express_delivery
       subject.add broadcaster_3, express_delivery
 
-      expect(subject.express_discount_applied).to eq(40)
+      expect(subject.total_savings).to eq(36)
     end
 
     it 'applies percentage discount to orders over $30 with no express delivery' do

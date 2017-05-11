@@ -5,7 +5,9 @@ class Order
     price: 8
   }.freeze
 
-  attr_accessor :material, :items, :delivery_type, :discount, :express_delivery_frequency, :total_cost, :express_discount_total, :percentage_discount_applied
+  DISCOUNT_THRESHHOLD = 30
+
+  attr_accessor :material, :items, :delivery_type, :discount, :express_delivery_frequency, :total_cost, :express_discount_total, :percentage_discount_applied, :percentage_discount_total
 
   def initialize(material)
     self.material = material
@@ -24,32 +26,32 @@ class Order
     @express_delivery_frequency = delivery_type.count(:express)
   end
 
-  def express_discount_applied
-    if @express_delivery_frequency >=2
-      @express_discount_total = total_cost - @discount.express_discount(express_delivery_frequency)
-    else
-      @express_discount_total = 0
-    end
-  end
-
-  def percentage_discount_applied
-    express_discount_applied
-    if @express_discount_total == 0
-      percentage_discount_total = total_cost - @discount.percentage_discount(total_cost)
-    else
-      percentage_discount_total = total_cost - @discount.percentage_discount(@express_discount_total)
-    end
-  end
-
   def total_savings
-    total_cost - percentage_discount_applied
+    percentage_discount_applied
+    total_cost - @percentage_discount_total
   end
 
   def total_cost
     items.inject(0) { |memo, (_, delivery)| memo += delivery.price }
   end
 
+  def express_discount_applied
+      @express_discount_total = @discount.express_discount(express_delivery_frequency)
+  end
+
+  def percentage_discount_applied
+    total_cost
+    express_discount_applied
+    current_discounted_total = total_cost - express_discount_total
+    if current_discounted_total >= DISCOUNT_THRESHHOLD
+      @percentage_discount_total = total_cost - @discount.percentage_discount(current_discounted_total)
+    else
+      @percentage_discount_total = 0
+    end
+  end
+
   def output
+    total_savings
     [].tap do |result|
       result << "Order for #{material.identifier}:"
 

@@ -19,7 +19,7 @@ class Discount
     if express_delivery_frequency >= EXPRESS_FREQUENCY_DISCOUNT_THRESHHOLD
       @express_discount_amount = express_delivery_frequency*(EXPRESS_FREQUENCY_DISCOUNT_AMOUNT)
     else
-      @express_discount_amount
+      @express_discount_amount = 0
     end
   end
 
@@ -27,7 +27,7 @@ class Discount
     if total_cost >= PERCENTAGE_DISCOUNT_THRESHHOLD
       @percent_discount_amount = total_cost*(PERCENTAGE_DISCOUNT_AMOUNT)
     else
-      @percent_discount_amount
+      @percent_discount_amount = 0
     end
   end
 
